@@ -1,4 +1,3 @@
-console.log('running file')
 document.addEventListener("DOMContentLoaded",function(){
   
   var body=document.body;

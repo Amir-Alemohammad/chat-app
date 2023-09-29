@@ -14,8 +14,8 @@ module.exports = class Application{
     constructor(port){
         this.#PORT = port
         this.configApplication()
-        this.createRoutes()
         this.initTemplateEngin()
+        this.createRoutes()
         this.handleErrors()
     }
     configApplication(){
@@ -31,7 +31,7 @@ module.exports = class Application{
         this.#app.use(ExpressEjsLayouts);
         this.#app.set("view engin","ejs");
         this.#app.set("views","resource/views");
-        this.#app.set("layout","./layouts/mainLayout.ejs")
+        this.#app.set("layout","./layouts/mainLayout.ejs");
         this.#app.set("layout extractStyles",true);
         this.#app.set("layout extractScripts",true);
     }

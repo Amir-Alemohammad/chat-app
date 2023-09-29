@@ -4,11 +4,22 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/dist/css/font-awesome.css">
+    <link rel="stylesheet" href="/dist/css/style.css">
     <% if (path === "/404") { %>
-        <link rel="stylesheet" href="/css/404.css">
-    <% } %>
+        <link rel="stylesheet" href="/dist/css/404.css">
+        <% }%>
     <title><%= pageTitle %></title>
 </head>
 <body class="rtl">
-   <%- body -%>
-   <script src="/js/404.js"></script>
+<%- body -%>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script src="/dist/js/index.js"></script>
+<%if(path === "/404"){%>
+    <script src="/dist/js/404.js"></script>
+<%}%>
+<%- script -%>
+</body>
+</html>
