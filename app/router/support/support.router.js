@@ -1,4 +1,4 @@
-const {SupportController} = require("../../controllers/support.controller");
+const {SupportController} = require("../../controllers/support/support.controller");
 
 const router = require("express").Router();
 

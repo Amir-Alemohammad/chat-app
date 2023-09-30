@@ -1,4 +1,4 @@
-const Controller = require("./controller");
+const Controller = require("../controller");
 
 class SupportController extends Controller{
     async renderChatRoom(req,res,next){
