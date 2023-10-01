@@ -6,6 +6,8 @@ const ejs = require("ejs");
 const { AllRoutes } = require("./router/router");
 const { ErrorController } = require("./controllers/errorHandler.controller");
 const { default: mongoose } = require("mongoose");
+const swaggerUi = require("swagger-ui-express");
+const swaggerJsDoc = require("swagger-jsdoc")
 
 dotenv.config();
 
@@ -27,6 +29,39 @@ module.exports = class Application{
         this.#app.use(express.urlencoded({extended:false}))
         this.#app.use(express.json())
         this.#app.listen(this.#PORT,() => console.log(`Server Running on Port ${this.#PORT}`));
+        //Swagger Open Api
+        this.#app.use("/api-docs",swaggerUi.serve,swaggerUi.setup(swaggerJsDoc({
+            swaggerDefinition:{
+                openapi : "3.0.1",
+                info: {
+                    title: "Chat App",
+                    version: "2.0.0",
+                    description: "Chat App",
+                    contact:{
+                        name: "Amir-Alemohammad",
+                        email: "amirho3inalemohammad@gmail.com",
+                    }
+                },
+                servers:[
+                    {
+                        url: "http://localhost:3000"
+                    },
+                ],
+                components: {
+                    securitySchemes: {
+                        bearerAuth: {
+                            type: "http",
+                            scheme: "bearer",
+                            bearerFormat: "JWT",
+                        },
+                    }
+                },
+                security: [{
+                    bearerAuth : []
+                }]
+            },
+            apis: ["./app/router/*/*.js"],
+        }),{explorer:true}));
     }
     async configDataBase(){
         mongoose.set("strictQuery",false);
