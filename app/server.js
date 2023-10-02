@@ -8,6 +8,9 @@ const { ErrorController } = require("./controllers/errorHandler.controller");
 const { default: mongoose } = require("mongoose");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc")
+const http = require("http");
+const { initialSocket } = require("./utils/initSocket");
+const { socketHandler } = require("./socket.io");
 
 dotenv.config();
 
@@ -28,7 +31,10 @@ module.exports = class Application{
         this.#app.use(express.static(path.join(process.cwd(),"public")))
         this.#app.use(express.urlencoded({extended:false}))
         this.#app.use(express.json())
-        this.#app.listen(this.#PORT,() => console.log(`Server Running on Port ${this.#PORT}`));
+        const server = http.createServer(this.#app)
+        server.listen(this.#PORT,() => console.log(`Server Running on Port ${this.#PORT}`))
+        const io = initialSocket(server);
+        socketHandler(io);
         //Swagger Open Api
         this.#app.use("/api-docs",swaggerUi.serve,swaggerUi.setup(swaggerJsDoc({
             swaggerDefinition:{
