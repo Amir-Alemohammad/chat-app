@@ -26,6 +26,7 @@ module.exports = class NamespaceSocketHandler{
                     await this.getCountOfOnlineUsers(namespace.endpoint,roomName)
                     const roomInfo = conversation.rooms.find(item => item.name == roomName);
                     socket.emit("roomInfo",roomInfo)
+                    this.getNewMessages(socket)
                     socket.on("disconnect",async () => {
                         await this.getCountOfOnlineUsers(namespace.endpoint,roomName)
                     });
@@ -37,5 +38,20 @@ module.exports = class NamespaceSocketHandler{
     async getCountOfOnlineUsers(endpoint,roomName){
         const onlineUsers = await this.#io.of(`/${endpoint}`).in(roomName).allSockets();
         this.#io.of(`/${endpoint}`).in(roomName).emit("onlineUsers",Array.from(onlineUsers).length)
+    }
+    getNewMessages(socket){
+        socket.on("newMessage",async data => {
+            const {message,roomName,endpoint} = data;
+            await conversationModel.updateOne({endpoint, "rooms.name": roomName}, {
+                $push : {
+                    "rooms.$.messages" : {
+                        sender:"64a426694d979233e1be1170",
+                        message, 
+                        dateTime: Date.now()
+                    } 
+                }
+            })
+            
+        })
     }
 }
