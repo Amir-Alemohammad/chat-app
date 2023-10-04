@@ -9,9 +9,13 @@ function getRoomInfo(room){
     namespaceSocket.emit("joinRoom",room);
     namespaceSocket.on("roomInfo",roomInfo => {
         document.querySelector("#roomName h3").innerText = roomInfo.description;
+    });
+    namespaceSocket.on("onlineUsers",count => {
+        document.getElementById("count").innerText = count;
     })
 }
 function initNamespaceConnection(endpoint){
+    if(namespaceSocket) namespaceSocket.close();
     namespaceSocket = io(`http://localhost:3000/${endpoint}`);
     namespaceSocket.on("connect",() => {
         namespaceSocket.on("roomList",rooms => {
