@@ -27,7 +27,8 @@ class SupportController extends Controller{
         });
         const token = await signAccessToken(user._id);
         res.cookie("authorization",token,{signed:true,httpOnly:true,expires: new Date(Date.now() + 1000 * 60 * 60 * 1)});
-        await userModel.updateOne({mobile},{token,});      
+        user.token = token;
+        user.save();     
         return res.redirect("/support")
     }
 }
