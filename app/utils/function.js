@@ -1,7 +1,28 @@
 const fs = require("fs")
 const path = require("path")
 const createError = require("http-errors");
+const userModel = require("../models/user");
+const JWT = require("jsonwebtoken");
+const createHttpError = require("http-errors");
 
+function signAccessToken(userId){
+    return new Promise(async (resolve,reject) => {
+        const user = await userModel.findById(userId)
+        const payload = {
+            mobile: user.mobile,
+            fullname: user.fullname,
+        }
+        console.log(payload)
+        const options = {
+            expiresIn: "1d"
+        }
+        JWT.sign(payload,process.env.JWT_SECRET,options,(err,token) => {
+            if(err) reject(createHttpError.InternalServerError("خطایی از سمت سرور رخ داده است"))
+            console.log(token)
+            resolve(token)
+        })
+    })
+}
 function createRoute(req) {
     const date = new Date();
     const year = date.getFullYear().toString();
@@ -26,7 +47,8 @@ function removeFileInPublic(fileAddress){
     fs.unlinkSync(filePath)
 }
 module.exports = {
+    signAccessToken,
     createRoute,
     fileFilter,
-    removeFileInPublic
+    removeFileInPublic,
 }

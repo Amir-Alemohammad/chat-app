@@ -11,6 +11,8 @@ const swaggerJsDoc = require("swagger-jsdoc")
 const http = require("http");
 const { initialSocket } = require("./utils/initSocket");
 const { socketHandler } = require("./socket.io");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
 
 dotenv.config();
 
@@ -22,6 +24,7 @@ module.exports = class Application{
         this.#PORT = PORT;
         this.#DB_URI = DB_URI
         this.configApplication()
+        this.initClientSession()
         this.configDataBase()
         this.initTemplateEngin()
         this.createRoutes()
@@ -68,6 +71,17 @@ module.exports = class Application{
             },
             apis: ["./app/router/*/*.js"],
         }),{explorer:true}));
+    }
+    initClientSession(){
+        this.#app.use(cookieParser(process.env.COOKIE_SECRET))
+        this.#app.use(session({
+            secret: process.env.COOKIE_SECRET,
+            resave: true,
+            saveUninitialized: true,
+            cookie: {
+              secure: true
+            }
+        }));
     }
     async configDataBase(){
         mongoose.set("strictQuery",false);
