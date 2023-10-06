@@ -13,6 +13,7 @@ const { initialSocket } = require("./utils/initSocket");
 const { socketHandler } = require("./socket.io");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
+const { clientHelper } = require("./utils/function");
 
 dotenv.config();
 
@@ -107,6 +108,10 @@ module.exports = class Application{
         this.#app.set("layout","./layouts/mainLayout.ejs");
         this.#app.set("layout extractStyles",true);
         this.#app.set("layout extractScripts",true);
+        this.#app.use((req,res,next) => {
+            this.#app.locals = clientHelper(req,res,next);
+            next();
+        })
     }
     handleErrors(){
         this.#app.use(ErrorController.get404)

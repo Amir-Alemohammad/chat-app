@@ -46,9 +46,16 @@ function removeFileInPublic(fileAddress){
     console.log(`File Deleted: ${fileAddress}`)
     fs.unlinkSync(filePath)
 }
+function clientHelper(req,res,next){
+    // send request to client
+    return {
+        req,
+    }
+}
 module.exports = {
     signAccessToken,
     createRoute,
     fileFilter,
     removeFileInPublic,
+    clientHelper,
 }
