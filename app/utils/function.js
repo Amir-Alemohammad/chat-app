@@ -9,8 +9,9 @@ function signAccessToken(userId){
     return new Promise(async (resolve,reject) => {
         const user = await userModel.findById(userId)
         const payload = {
-            mobile: user.mobile,
-            fullname: user.fullname,
+            id : user._id,
+            mobile : user.mobile,
+            fullname : user.fullname,
         }
         console.log(payload)
         const options = {
@@ -18,7 +19,6 @@ function signAccessToken(userId){
         }
         JWT.sign(payload,process.env.JWT_SECRET,options,(err,token) => {
             if(err) reject(createHttpError.InternalServerError("خطایی از سمت سرور رخ داده است"))
-            console.log(token)
             resolve(token)
         })
     })

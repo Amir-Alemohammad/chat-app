@@ -2,7 +2,14 @@
     <div class="contact-profile">
         <img src="/dist/images/photo-1529665253569-6d01c0eaf7b6.jpg"
             alt="" />
-            <p>Amir Alemohammad</p>
+            <p>
+            <%if(req.user.fullname){%>
+                <%=req.user.fullname%>
+            <%}else{%>
+                <%=req.user.mobile%>
+            <%}%>
+            </p>
+            <input type="hidden" id="userID" value="<%=req.user._id%>">
             <div class="social-media">
                 <span id="onlinesCount"><strong>افراد آنلاین : </strong><span id="count"><!-- this text from back end --></span></span>
             </div>

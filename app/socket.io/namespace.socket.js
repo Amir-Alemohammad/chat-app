@@ -41,11 +41,11 @@ module.exports = class NamespaceSocketHandler{
     }
     getNewMessages(socket){
         socket.on("newMessage",async data => {
-            const {message,roomName,endpoint} = data;
+            const {message,roomName,endpoint , sender} = data;
             await conversationModel.updateOne({endpoint, "rooms.name": roomName}, {
                 $push : {
                     "rooms.$.messages" : {
-                        sender:"64a426694d979233e1be1170",
+                        sender,
                         message, 
                         dateTime: Date.now()
                     } 

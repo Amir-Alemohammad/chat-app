@@ -21,10 +21,13 @@ function sendMessage(){
     const endpoint = document.querySelector("#roomName h3").getAttribute("endpoint")
     let message = document.querySelector(".message-input input#messageInput").value;
     if(message == "") return alert("input message cannot be empty!");
+    const userId = document.getElementById("userID").value
+    console.log(userId)
     namespaceSocket.emit("newMessage",{
         message,
         roomName,
         endpoint,
+        sender : userId,
     });
     namespaceSocket.on("confirmMessage",data => {
         console.log(data)
