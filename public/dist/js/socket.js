@@ -36,7 +36,6 @@ function sendMessage(){
     let message = document.querySelector(".message-input input#messageInput").value;
     if(message == "") return alert("input message cannot be empty!");
     const userId = document.getElementById("userID").value
-    console.log(userId)
     namespaceSocket.emit("newMessage",{
         message,
         roomName,
