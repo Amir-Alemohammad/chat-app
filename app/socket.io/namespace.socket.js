@@ -16,6 +16,7 @@ module.exports = class NamespaceSocketHandler{
         for(const namespace of namespaces){
             this.#io.of(`/${namespace.endpoint}`).on("connection",async socket=>{
                 const conversation = await conversationModel.findOne({endpoint:namespace.endpoint},{rooms:1}).sort({_id:-1});
+                socket.emit("roomList",conversation.rooms);
                 socket.on("joinRoom",async roomName => {
                     const lastRoom = Array.from(socket.rooms)[1];
                     if(lastRoom) {
@@ -31,7 +32,6 @@ module.exports = class NamespaceSocketHandler{
                         await this.getCountOfOnlineUsers(namespace.endpoint,roomName)
                     });
                 });
-                socket.emit("roomList",conversation.rooms);
             });
         }
     }
@@ -50,8 +50,8 @@ module.exports = class NamespaceSocketHandler{
                         dateTime: Date.now()
                     } 
                 }
-            })
-            
-        })
+            });
+            this.#io.of(`/${endpoint}`).in(roomName).emit("confirmMessage", data)
+        });
     }
 }

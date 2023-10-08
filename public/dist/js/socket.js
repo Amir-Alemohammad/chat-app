@@ -5,12 +5,26 @@ function stringToHtml(str) {
     const doc = parser.parseFromString(str,"text/html");
     return doc.body.firstChild
 }
-function getRoomInfo(endpoint , room){
-    namespaceSocket.emit("joinRoom",room);
+function getRoomInfo(endpoint , roomName){
+    document.querySelector("#roomName h3").setAttribute("roomName",roomName)
+    document.querySelector("#roomName h3").setAttribute("endpoint",endpoint)
+    namespaceSocket.emit("joinRoom",roomName);
+    namespaceSocket.off("roomInfo")
     namespaceSocket.on("roomInfo",roomInfo => {
+        document.querySelector(".messages ul").innerHTML = "";
         document.querySelector("#roomName h3").innerText = roomInfo.description;
-        document.querySelector("#roomName h3").setAttribute("roomName",roomInfo.name)
-        document.querySelector("#roomName h3").setAttribute("endpoint",endpoint)
+        const messages = roomInfo.messages;
+        const userID = document.getElementById("userID").value;
+        for(const message of messages){
+            const li = stringToHtml(`
+                <li class="${(userID == message.sender) ? 'sent' : 'replies'}">
+                    <img src="/dist/images/photo-1529665253569-6d01c0eaf7b6.jpg"
+                        alt="" />
+                    <p>${message.message}</p>
+                </li>   
+            `)
+            document.querySelector(".messages ul").appendChild(li);
+        }
     });
     namespaceSocket.on("onlineUsers",count => {
         document.getElementById("count").innerText = count;
@@ -29,20 +43,20 @@ function sendMessage(){
         endpoint,
         sender : userId,
     });
+    namespaceSocket.off("confirmMessage")
     namespaceSocket.on("confirmMessage",data => {
-        console.log(data)
+        const li = stringToHtml(`
+                <li class="${(userId == data.sender) ? 'sent' : 'replies'}">
+                <img src="/dist/images/photo-1529665253569-6d01c0eaf7b6.jpg"
+                        alt="picture" />
+                    <p>${data.message}</p>
+                </li>   
+        `)
+        document.querySelector(".messages ul").appendChild(li);
+        document.querySelector(".message-input input#messageInput").value = ""
+        const messageElement = document.querySelector("div.messages");
+        messageElement.scrollTo(0,messageElement.scrollHeight);
     });
-    const li = stringToHtml(`
-    <li class="sent">
-        <img src="/dist/images/photo-1529665253569-6d01c0eaf7b6.jpg"
-            alt="image" />
-        <p>${message}</p>
-    </li>
-    `);
-    document.querySelector(".messages ul").appendChild(li);
-    document.querySelector(".message-input input#messageInput").value = ""
-    const messageElement = document.querySelector("div.messages");
-    messageElement.scrollTo(0,messageElement.scrollHeight);
 }
 function initNamespaceConnection(endpoint){
     if(namespaceSocket) namespaceSocket.close();
