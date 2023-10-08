@@ -1,4 +1,6 @@
 const conversationModel = require("../models/conversation");
+const path = require("path");
+const fs = require("fs");
 
 module.exports = class NamespaceSocketHandler{
     #io;
@@ -29,6 +31,7 @@ module.exports = class NamespaceSocketHandler{
                     socket.emit("roomInfo",roomInfo)
                     this.getNewMessages(socket)
                     this.getNewLocation(socket)
+                    this.uploadFiles(socket)
                     socket.on("disconnect",async () => {
                         await this.getCountOfOnlineUsers(namespace.endpoint,roomName)
                     });
@@ -69,5 +72,13 @@ module.exports = class NamespaceSocketHandler{
             });
             this.#io.of(`/${endpoint}`).in(roomName).emit("confirmLocation", data)
         });
+    }
+    uploadFiles(socket){
+        socket.on("upload",({file,filename},callback) => {
+            const ext = path.extname(filename);
+            fs.writeFile("public/uploads/sockets/" + String(Date.now() + ext) ,file , (err) => {
+                callback({message:err ? "failure" : "success"});
+            });
+        })
     }
 }
