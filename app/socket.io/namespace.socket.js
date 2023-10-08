@@ -28,6 +28,7 @@ module.exports = class NamespaceSocketHandler{
                     const roomInfo = conversation.rooms.find(item => item.name == roomName);
                     socket.emit("roomInfo",roomInfo)
                     this.getNewMessages(socket)
+                    this.getNewLocation(socket)
                     socket.on("disconnect",async () => {
                         await this.getCountOfOnlineUsers(namespace.endpoint,roomName)
                     });
@@ -52,6 +53,21 @@ module.exports = class NamespaceSocketHandler{
                 }
             });
             this.#io.of(`/${endpoint}`).in(roomName).emit("confirmMessage", data)
+        });
+    }
+    getNewLocation(socket){
+        socket.on("newLocation",async data => {
+            const {location,roomName,endpoint , sender} = data;
+            await conversationModel.updateOne({endpoint, "rooms.name": roomName}, {
+                $push : {
+                    "rooms.$.messages" : {
+                        sender,
+                        location, 
+                        dateTime: Date.now()
+                    } 
+                }
+            });
+            this.#io.of(`/${endpoint}`).in(roomName).emit("confirmLocation", data)
         });
     }
 }
