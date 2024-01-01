@@ -1,18 +1,18 @@
 <div class="content">
     <div class="contact-profile">
-        <img src="/dist/images/photo-1529665253569-6d01c0eaf7b6.jpg"
-            alt="" />
-            <p>
+        <img src="/dist/images/photo-1529665253569-6d01c0eaf7b6.jpg" alt="" />
+        <p>
             <%if(req.user.fullname){%>
                 <%=req.user.fullname%>
-            <%}else{%>
-                <%=req.user.mobile%>
-            <%}%>
-            </p>
-            <input type="hidden" id="userID" value="<%=req.user._id%>">
-            <div class="social-media">
-                <span id="onlinesCount"><strong>افراد آنلاین : </strong><span id="count"><!-- this text from back end --></span></span>
-            </div>
+                    <%}else{%>
+                        <%=req.user.mobile%>
+                            <%}%>
+        </p>
+        <input type="hidden" id="userID" value="<%=req.user._id%>">
+        <div class="social-media">
+            <span id="onlinesCount"><strong>افراد آنلاین : </strong><span
+                    id="count"><!-- this text from back end --></span></span>
+        </div>
     </div>
     <div id="roomName">
         <h3> <!--this text from back end--> </h3>
@@ -20,16 +20,16 @@
     <div class="messages pb-5">
         <ul>
             <!-- this text from back end -->
-            
+
         </ul>
     </div>
     <div class="message-input">
         <div class="wrap">
             <input type="text" id="messageInput" placeholder="Write your message..." />
-            <input type="file" onchange="sendFile(this.files)"/>
+            <input type="file" onchange="sendFile(this.files)" />
             <div>
-                <button class="submit">send</i></button>
-                <button class="location" onclick="getLocation()">location</i></button>
+                <button class="submit">send</button>
+                <!-- <button class="location" onclick="getLocation()">location</i></button> -->
             </div>
         </div>
     </div>
